@@ -48,6 +48,23 @@ All colors MUST be HSL.
     --node-bg: 220 13% 15%;
     --node-border: 220 13% 25%;
     
+    /* Node Type Specific Colors */
+    --character-bg: 280 50% 15%;
+    --character-border: 280 70% 45%;
+    --image-bg: 200 50% 15%;
+    --image-border: 200 70% 45%;
+    --video-bg: 340 50% 15%;
+    --video-border: 340 70% 45%;
+    --audio-bg: 120 50% 15%;
+    --audio-border: 120 70% 45%;
+    --composition-bg: 60 50% 15%;
+    --composition-border: 60 70% 45%;
+    --export-bg: 20 50% 15%;
+    --export-border: 20 70% 45%;
+    --export-shadow: 20 70% 45% / 0.3;
+    --timeline-bg: 240 50% 15%;
+    --timeline-border: 240 70% 45%;
+    
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-workspace: linear-gradient(180deg, hsl(var(--workspace)), hsl(220 13% 6%));
