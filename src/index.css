@@ -64,6 +64,12 @@ All colors MUST be HSL.
     --export-shadow: 20 70% 45% / 0.3;
     --timeline-bg: 240 50% 15%;
     --timeline-border: 240 70% 45%;
+    --timeline-shadow: 240 50% 5%;
+    --timeline-accent: 240 60% 25%;
+    --script-bg: 160 50% 15%;
+    --script-border: 160 70% 45%;
+    --effects-bg: 30 50% 15%;
+    --effects-border: 30 70% 45%;
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
