@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { 
   ReactFlow, 
   addEdge, 
@@ -13,317 +13,182 @@ import {
   BackgroundVariant
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { NodeDetailModal } from './NodeDetailModal';
+import { TimelineNode } from './TimelineNode';
 
-// Massive Neo Detective Episode Production Pipeline
+// Import real images
+import detectiveNeo from '@/assets/detective-neo.jpg';
+import womanPortrait from '@/assets/woman-portrait.jpg';
+import noirCity from '@/assets/noir-city.jpg';
+import crimeScene from '@/assets/crime-scene.jpg';
+import nightclubScene from '@/assets/nightclub-scene.jpg';
+
+// Register custom node types
+const nodeTypes = {
+  timeline: TimelineNode,
+};
+
+// Neo Detective Episode Production Pipeline - Tree Structure from Timeline
 const initialNodes: Node[] = [
-  // ============ CHARACTER NODES (Far Left) ============
+  // ============ TIMELINE AT BOTTOM (Master Node) ============
   {
-    id: 'char-detective-neo',
-    type: 'default',
-    position: { x: 50, y: 200 },
+    id: 'timeline-master',
+    type: 'timeline',
+    position: { x: 400, y: 1400 },
     data: { 
-      label: '🕵️ Detective Neo',
-      type: 'character',
-      preview: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=100&fit=crop',
-      details: 'Main protagonist - Hardboiled detective'
+      label: 'NEO DETECTIVE EPISODE MASTER TIMELINE',
+      scenes: [
+        'Opening', 'Inciting', 'Investigation', 'Nightclub', 'Chase', 
+        'Stakeout', 'Discovery', 'Revelation', 'Showdown', 'Resolution'
+      ],
+      totalLength: '42 minutes',
+      acts: 'Three Act Structure'
     },
     style: { 
-      backgroundColor: 'hsl(var(--character-bg))',
-      border: '2px solid hsl(var(--character-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 180,
-      height: 120
-    },
-  },
-  {
-    id: 'char-femme-fatale',
-    type: 'default',
-    position: { x: 50, y: 350 },
-    data: { 
-      label: '💋 Femme Fatale',
-      type: 'character',
-      preview: 'https://images.unsplash.com/photo-1494790108755-2616c34302dc?w=150&h=100&fit=crop',
-      details: 'Mysterious woman with secrets'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--character-bg))',
-      border: '2px solid hsl(var(--character-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 180,
-      height: 120
-    },
-  },
-  {
-    id: 'char-crime-boss',
-    type: 'default',
-    position: { x: 50, y: 500 },
-    data: { 
-      label: '👑 Crime Boss',
-      type: 'character',
-      preview: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=100&fit=crop',
-      details: 'Main antagonist - Ruthless kingpin'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--character-bg))',
-      border: '2px solid hsl(var(--character-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 180,
-      height: 120
-    },
-  },
-  {
-    id: 'char-police-captain',
-    type: 'default',
-    position: { x: 50, y: 650 },
-    data: { 
-      label: '👮 Police Captain',
-      type: 'character',
-      preview: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=100&fit=crop',
-      details: 'Corrupt police captain'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--character-bg))',
-      border: '2px solid hsl(var(--character-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 180,
-      height: 120
-    },
-  },
-  {
-    id: 'char-informant',
-    type: 'default',
-    position: { x: 50, y: 800 },
-    data: { 
-      label: '🕵️ Street Informant',
-      type: 'character',
-      preview: 'https://images.unsplash.com/photo-1539571696285-e7333c0fcb6e?w=150&h=100&fit=crop',
-      details: 'Nervous street informant'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--character-bg))',
-      border: '2px solid hsl(var(--character-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 180,
-      height: 120
+      width: 1200,
+      height: 200
     },
   },
 
-  // ============ ACT I - SCRIPT NODES ============
+  // ============ SCENE NODES (Connected to Timeline) ============
+  
+  // ACT I SCENES
   {
-    id: 'script-act1-opener',
+    id: 'scene-opening',
     type: 'default',
-    position: { x: 300, y: 50 },
+    position: { x: 100, y: 1100 },
     data: { 
-      label: '📜 Act I Opening',
-      type: 'script',
-      preview: 'FADE IN: Rain-soaked city street...',
-      pages: '15 pages'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--script-bg))',
-      border: '2px solid hsl(var(--script-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 200,
-      height: 140
-    },
-  },
-  {
-    id: 'script-inciting-incident',
-    type: 'default',
-    position: { x: 300, y: 220 },
-    data: { 
-      label: '📜 Inciting Incident',
-      type: 'script',
-      preview: 'The murder that changes everything...',
-      pages: '8 pages'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--script-bg))',
-      border: '2px solid hsl(var(--script-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 200,
-      height: 140
-    },
-  },
-
-  // ============ ACT I - IMAGE GENERATION NODES ============
-  {
-    id: 'img-city-noir-night',
-    type: 'default',
-    position: { x: 550, y: 100 },
-    data: { 
-      label: '🌃 Noir City Night',
-      type: 'image',
-      model: 'DALL-E 3',
-      preview: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=200&h=150&fit=crop',
-      prompt: 'Dark noir cityscape with neon lights and rain'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 220,
-      height: 160
-    },
-  },
-  {
-    id: 'img-crime-scene',
-    type: 'default',
-    position: { x: 550, y: 280 },
-    data: { 
-      label: '🔍 Crime Scene',
-      type: 'image',
-      model: 'Midjourney',
-      preview: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=150&fit=crop',
-      prompt: 'Police tape, body outline, detective investigating'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 220,
-      height: 160
-    },
-  },
-  {
-    id: 'img-detective-office',
-    type: 'default',
-    position: { x: 550, y: 460 },
-    data: { 
-      label: '🏢 Detective Office',
-      type: 'image',
-      model: 'Stable Diffusion XL',
-      preview: 'https://images.unsplash.com/photo-1541746972996-4e0b0f93e586?w=200&h=150&fit=crop',
-      prompt: 'Classic detective office with case files and whiskey'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 220,
-      height: 160
-    },
-  },
-
-  // ============ ACT I - SCENE COMPOSITION NODES ============
-  {
-    id: 'scene-opening-sequence',
-    type: 'default',
-    position: { x: 800, y: 180 },
-    data: { 
-      label: '🎬 Opening Sequence',
+      label: '🎬 Opening Scene',
       type: 'composition',
-      preview: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=250&h=180&fit=crop',
-      elements: 'City + Rain + Detective Introduction'
+      preview: noirCity,
+      elements: 'City + Rain + Detective Introduction',
+      duration: '4 min'
     },
     style: { 
       backgroundColor: 'hsl(var(--composition-bg))',
-      border: '2px solid hsl(var(--composition-border))',
+      border: '3px solid hsl(var(--composition-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '12px',
-      width: 250,
-      height: 180
+      width: 200,
+      height: 150
     },
   },
   {
-    id: 'scene-crime-discovery',
+    id: 'scene-inciting',
     type: 'default',
-    position: { x: 800, y: 380 },
+    position: { x: 350, y: 1100 },
     data: { 
-      label: '🎬 Crime Discovery',
+      label: '🎬 Inciting Incident',
       type: 'composition',
-      preview: 'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=250&h=180&fit=crop',
-      elements: 'Crime Scene + Detective + Investigation'
+      preview: crimeScene,
+      elements: 'Murder Discovery + Investigation Start',
+      duration: '3 min'
     },
     style: { 
       backgroundColor: 'hsl(var(--composition-bg))',
-      border: '2px solid hsl(var(--composition-border))',
+      border: '3px solid hsl(var(--composition-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '12px',
-      width: 250,
-      height: 180
+      width: 200,
+      height: 150
     },
   },
 
-  // ============ TRANSITION & EFFECTS NODES ============
+  // ACT II SCENES  
   {
-    id: 'transition-fade-in',
+    id: 'scene-investigation',
     type: 'default',
-    position: { x: 1080, y: 120 },
+    position: { x: 600, y: 1100 },
     data: { 
-      label: '🌫️ Fade In',
-      type: 'transition',
-      duration: '2s',
-      effect: 'Cinematic fade from black'
+      label: '🎬 Investigation',
+      type: 'composition',
+      preview: detectiveNeo,
+      elements: 'Detective Work + Clue Gathering',
+      duration: '8 min'
     },
     style: { 
-      backgroundColor: 'hsl(var(--effects-bg))',
-      border: '2px solid hsl(var(--effects-border))',
+      backgroundColor: 'hsl(var(--composition-bg))',
+      border: '3px solid hsl(var(--composition-border))',
       color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '6px',
-      width: 160,
-      height: 100
+      borderRadius: '12px',
+      width: 200,
+      height: 150
     },
   },
   {
-    id: 'effect-rain',
+    id: 'scene-nightclub',
     type: 'default',
-    position: { x: 1080, y: 240 },
+    position: { x: 850, y: 1100 },
     data: { 
-      label: '🌧️ Rain Effect',
-      type: 'effect',
-      intensity: 'Heavy',
-      overlay: 'Atmospheric rain with reflections'
+      label: '🎬 Nightclub',
+      type: 'composition',
+      preview: nightclubScene,
+      elements: 'Femme Fatale + Interrogation',
+      duration: '6 min'
     },
     style: { 
-      backgroundColor: 'hsl(var(--effects-bg))',
-      border: '2px solid hsl(var(--effects-border))',
+      backgroundColor: 'hsl(var(--composition-bg))',
+      border: '3px solid hsl(var(--composition-border))',
       color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '6px',
-      width: 160,
-      height: 100
-    },
-  },
-  {
-    id: 'effect-color-grade-noir',
-    type: 'default',
-    position: { x: 1080, y: 360 },
-    data: { 
-      label: '🎨 Noir Color Grade',
-      type: 'effect',
-      style: 'High contrast B&W with selective color',
-      mood: 'Dark, moody'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--effects-bg))',
-      border: '2px solid hsl(var(--effects-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '6px',
-      width: 160,
-      height: 100
+      borderRadius: '12px',
+      width: 200,
+      height: 150
     },
   },
 
-  // ============ ACT I - VIDEO GENERATION NODES ============
+  // More scenes continuing pattern...
+  {
+    id: 'scene-chase',
+    type: 'default',
+    position: { x: 1100, y: 1100 },
+    data: { 
+      label: '🎬 Chase Scene',
+      type: 'composition',
+      preview: noirCity,
+      elements: 'High Speed Pursuit',
+      duration: '5 min'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--composition-bg))',
+      border: '3px solid hsl(var(--composition-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '12px',
+      width: 200,
+      height: 150
+    },
+  },
+
+  {
+    id: 'scene-showdown',
+    type: 'default',
+    position: { x: 1350, y: 1100 },
+    data: { 
+      label: '🎬 Final Showdown',
+      type: 'composition',
+      preview: crimeScene,
+      elements: 'Detective vs Crime Boss',
+      duration: '10 min'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--composition-bg))',
+      border: '3px solid hsl(var(--composition-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '12px',
+      width: 200,
+      height: 150
+    },
+  },
+
+  // ============ VIDEO NODES (Layer 2) ============
   {
     id: 'video-opening-title',
     type: 'default',
-    position: { x: 1280, y: 150 },
+    position: { x: 50, y: 850 },
     data: { 
       label: '🎥 Opening Title',
       type: 'video',
       model: 'RunwayML Gen-4',
-      preview: 'https://images.unsplash.com/photo-1489599745480-b93463631bf9?w=280&h=200&fit=crop',
+      preview: noirCity,
       duration: '10s',
       settings: 'Dramatic title reveal with rain'
     },
@@ -332,231 +197,268 @@ const initialNodes: Node[] = [
       border: '2px solid hsl(var(--video-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '10px',
-      width: 280,
-      height: 200
+      width: 180,
+      height: 120
     },
   },
   {
     id: 'video-detective-intro',
     type: 'default',
-    position: { x: 1280, y: 370 },
+    position: { x: 250, y: 850 },
     data: { 
-      label: '🎥 Detective Introduction',
+      label: '🎥 Detective Intro',
       type: 'video',
       model: 'Google Veo 3',
-      preview: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=280&h=200&fit=crop',
+      preview: detectiveNeo,
       duration: '25s',
-      settings: 'Character establishment, walking in rain'
+      settings: 'Character walking in rain'
     },
     style: { 
       backgroundColor: 'hsl(var(--video-bg))',
       border: '2px solid hsl(var(--video-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '10px',
-      width: 280,
-      height: 200
+      width: 180,
+      height: 120
     },
   },
-
-  // ============ ACT II - INVESTIGATION ============
   {
-    id: 'script-act2-investigation',
+    id: 'video-crime-discovery',
     type: 'default',
-    position: { x: 300, y: 600 },
+    position: { x: 450, y: 850 },
     data: { 
-      label: '📜 Act II Investigation',
-      type: 'script',
-      preview: 'Following leads through the underbelly...',
-      pages: '35 pages'
+      label: '🎥 Crime Discovery',
+      type: 'video',
+      model: 'Pika Labs',
+      preview: crimeScene,
+      duration: '15s',
+      settings: 'Investigation scene'
     },
     style: { 
-      backgroundColor: 'hsl(var(--script-bg))',
-      border: '2px solid hsl(var(--script-border))',
+      backgroundColor: 'hsl(var(--video-bg))',
+      border: '2px solid hsl(var(--video-border))',
       color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 200,
-      height: 140
-    },
-  },
-
-  // ============ MORE IMAGE NODES FOR ACT II ============
-  {
-    id: 'img-nightclub-interior',
-    type: 'default',
-    position: { x: 550, y: 640 },
-    data: { 
-      label: '🍸 Nightclub Interior',
-      type: 'image',
-      model: 'Flux Pro',
-      preview: 'https://images.unsplash.com/photo-1571266028243-b6ba0b24e4ab?w=200&h=150&fit=crop',
-      prompt: 'Smoky jazz club with neon lights and shadows'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 220,
-      height: 160
+      borderRadius: '10px',
+      width: 180,
+      height: 120
     },
   },
   {
-    id: 'img-warehouse-exterior',
+    id: 'video-nightclub-tension',
     type: 'default',
-    position: { x: 550, y: 820 },
-    data: { 
-      label: '🏭 Warehouse Exterior',
-      type: 'image',
-      model: 'DALL-E 3',
-      preview: 'https://images.unsplash.com/photo-1586980503533-87f9d3e64b9c?w=200&h=150&fit=crop',
-      prompt: 'Industrial warehouse district at night'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 220,
-      height: 160
-    },
-  },
-  {
-    id: 'img-alley-meeting',
-    type: 'default',
-    position: { x: 550, y: 1000 },
-    data: { 
-      label: '🌙 Dark Alley',
-      type: 'image',
-      model: 'Midjourney',
-      preview: 'https://images.unsplash.com/photo-1520637836862-4d197d17c93a?w=200&h=150&fit=crop',
-      prompt: 'Secretive meeting in dark urban alley'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 220,
-      height: 160
-    },
-  },
-
-  // ============ ACT II - SCENE COMPOSITIONS ============
-  {
-    id: 'scene-nightclub-interrogation',
-    type: 'default',
-    position: { x: 800, y: 720 },
-    data: { 
-      label: '🎬 Nightclub Interrogation',
-      type: 'composition',
-      preview: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=250&h=180&fit=crop',
-      elements: 'Nightclub + Detective + Femme Fatale'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--composition-bg))',
-      border: '2px solid hsl(var(--composition-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 250,
-      height: 180
-    },
-  },
-  {
-    id: 'scene-warehouse-stakeout',
-    type: 'default',
-    position: { x: 800, y: 920 },
-    data: { 
-      label: '🎬 Warehouse Stakeout',
-      type: 'composition',
-      preview: 'https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=250&h=180&fit=crop',
-      elements: 'Warehouse + Detective Surveillance'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--composition-bg))',
-      border: '2px solid hsl(var(--composition-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 250,
-      height: 180
-    },
-  },
-
-  // ============ MORE VIDEO NODES ============
-  {
-    id: 'video-nightclub-scene',
-    type: 'default',
-    position: { x: 1280, y: 590 },
+    position: { x: 800, y: 850 },
     data: { 
       label: '🎥 Nightclub Tension',
       type: 'video',
-      model: 'Pika Labs',
-      preview: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=280&h=200&fit=crop',
+      model: 'RunwayML Gen-4',
+      preview: nightclubScene,
       duration: '45s',
-      settings: 'Dialogue scene with atmospheric lighting'
+      settings: 'Dialogue with atmospheric lighting'
     },
     style: { 
       backgroundColor: 'hsl(var(--video-bg))',
       border: '2px solid hsl(var(--video-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '10px',
-      width: 280,
-      height: 200
+      width: 180,
+      height: 120
     },
   },
   {
     id: 'video-chase-sequence',
     type: 'default',
-    position: { x: 1280, y: 810 },
+    position: { x: 1000, y: 850 },
     data: { 
       label: '🎥 Chase Sequence',
       type: 'video',
-      model: 'RunwayML Gen-4',
-      preview: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=280&h=200&fit=crop',
+      model: 'Google Veo 3',
+      preview: noirCity,
       duration: '60s',
-      settings: 'High-energy pursuit through city streets'
+      settings: 'High-energy car chase'
     },
     style: { 
       backgroundColor: 'hsl(var(--video-bg))',
       border: '2px solid hsl(var(--video-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '10px',
-      width: 280,
-      height: 200
+      width: 180,
+      height: 120
+    },
+  },
+  {
+    id: 'video-final-confrontation',
+    type: 'default',
+    position: { x: 1300, y: 850 },
+    data: { 
+      label: '🎥 Final Confrontation',
+      type: 'video',
+      model: 'Minimax Hailuo',
+      preview: crimeScene,
+      duration: '120s',
+      settings: 'Dramatic showdown'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--video-bg))',
+      border: '2px solid hsl(var(--video-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '10px',
+      width: 180,
+      height: 120
     },
   },
 
-  // ============ AUDIO NODES ============
+  // ============ IMAGE GENERATION NODES (Layer 3) ============
+  {
+    id: 'img-city-skyline',
+    type: 'default',
+    position: { x: 0, y: 600 },
+    data: { 
+      label: '🌃 City Skyline',
+      type: 'image',
+      model: 'DALL-E 3',
+      preview: noirCity,
+      prompt: 'Film noir cityscape with dramatic lighting and rain'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--image-bg))',
+      border: '2px solid hsl(var(--image-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '8px',
+      width: 160,
+      height: 100
+    },
+  },
+  {
+    id: 'img-rain-street',
+    type: 'default',
+    position: { x: 180, y: 600 },
+    data: { 
+      label: '🌧️ Rain Street',
+      type: 'image',
+      model: 'Midjourney',
+      preview: noirCity,
+      prompt: 'Wet city street with neon reflections'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--image-bg))',
+      border: '2px solid hsl(var(--image-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '8px',
+      width: 160,
+      height: 100
+    },
+  },
+  {
+    id: 'img-detective-office',
+    type: 'default',
+    position: { x: 360, y: 600 },
+    data: { 
+      label: '🏢 Detective Office',
+      type: 'image',
+      model: 'Flux Pro',
+      preview: detectiveNeo,
+      prompt: 'Classic detective office with case files'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--image-bg))',
+      border: '2px solid hsl(var(--image-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '8px',
+      width: 160,
+      height: 100
+    },
+  },
+  {
+    id: 'img-crime-scene-tape',
+    type: 'default',
+    position: { x: 540, y: 600 },
+    data: { 
+      label: '🚨 Crime Scene',
+      type: 'image',
+      model: 'DALL-E 3',
+      preview: crimeScene,
+      prompt: 'Police tape and investigation scene'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--image-bg))',
+      border: '2px solid hsl(var(--image-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '8px',
+      width: 160,
+      height: 100
+    },
+  },
+  {
+    id: 'img-nightclub-interior',
+    type: 'default',
+    position: { x: 720, y: 600 },
+    data: { 
+      label: '🍸 Nightclub Interior',
+      type: 'image',
+      model: 'Stable Diffusion XL',
+      preview: nightclubScene,
+      prompt: 'Smoky jazz club with mood lighting'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--image-bg))',
+      border: '2px solid hsl(var(--image-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '8px',
+      width: 160,
+      height: 100
+    },
+  },
+  {
+    id: 'img-bar-scene',
+    type: 'default',
+    position: { x: 900, y: 600 },
+    data: { 
+      label: '🥃 Bar Scene',
+      type: 'image',
+      model: 'Flux Pro',
+      preview: nightclubScene,
+      prompt: 'Dimly lit bar with mysterious atmosphere'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--image-bg))',
+      border: '2px solid hsl(var(--image-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '8px',
+      width: 160,
+      height: 100
+    },
+  },
+
+  // ============ AUDIO NODES (Layer 4) ============
   {
     id: 'audio-detective-narration',
     type: 'default',
-    position: { x: 1600, y: 200 },
+    position: { x: 100, y: 400 },
     data: { 
       label: '🎤 Detective Narration',
       type: 'audio',
       model: 'ElevenLabs',
-      preview: 'https://www.soundjay.com/misc/sounds-1/beep-07a.wav',
-      voice: 'Gravelly male voice',
-      duration: '90s'
+      voice: 'Deep gravelly voice',
+      duration: '180s'
     },
     style: { 
       backgroundColor: 'hsl(var(--audio-bg))',
       border: '2px solid hsl(var(--audio-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '8px',
-      width: 200,
-      height: 120
+      width: 140,
+      height: 80
     },
   },
   {
     id: 'audio-jazz-score',
     type: 'default',
-    position: { x: 1600, y: 340 },
+    position: { x: 260, y: 400 },
     data: { 
       label: '🎵 Jazz Score',
       type: 'audio',
       model: 'Suno AI',
-      preview: 'https://www.soundjay.com/misc/sounds-1/beep-07a.wav',
-      style: 'Noir jazz with saxophone',
+      style: 'Film noir jazz with saxophone',
       duration: '300s'
     },
     style: { 
@@ -564,20 +466,19 @@ const initialNodes: Node[] = [
       border: '2px solid hsl(var(--audio-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '8px',
-      width: 200,
-      height: 120
+      width: 140,
+      height: 80
     },
   },
   {
     id: 'audio-rain-ambience',
     type: 'default',
-    position: { x: 1600, y: 480 },
+    position: { x: 420, y: 400 },
     data: { 
       label: '🌧️ Rain Ambience',
       type: 'audio',
-      model: 'MusicGen',
-      preview: 'https://www.soundjay.com/misc/sounds-1/beep-07a.wav',
-      atmosphere: 'City rain and traffic',
+      model: 'AudioCraft',
+      atmosphere: 'City rain and distant traffic',
       duration: '240s'
     },
     style: { 
@@ -585,304 +486,293 @@ const initialNodes: Node[] = [
       border: '2px solid hsl(var(--audio-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '8px',
-      width: 200,
-      height: 120
+      width: 140,
+      height: 80
     },
   },
   {
-    id: 'audio-dialogue-femme',
+    id: 'audio-femme-voice',
     type: 'default',
-    position: { x: 1600, y: 620 },
+    position: { x: 800, y: 400 },
     data: { 
-      label: '🎤 Femme Fatale Voice',
+      label: '💋 Femme Fatale Voice',
       type: 'audio',
       model: 'ElevenLabs',
-      preview: 'https://www.soundjay.com/misc/sounds-1/beep-07a.wav',
-      voice: 'Sultry female voice',
-      duration: '45s'
+      voice: 'Sultry sophisticated female',
+      duration: '60s'
     },
     style: { 
       backgroundColor: 'hsl(var(--audio-bg))',
       border: '2px solid hsl(var(--audio-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '8px',
-      width: 200,
+      width: 140,
+      height: 80
+    },
+  },
+
+  // ============ CHARACTER NODES (Layer 5) ============
+  {
+    id: 'char-detective-neo',
+    type: 'default',
+    position: { x: 50, y: 200 },
+    data: { 
+      label: '🕵️ Detective Neo',
+      type: 'character',
+      preview: detectiveNeo,
+      details: 'Main protagonist - Hardboiled detective with troubled past'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--character-bg))',
+      border: '3px solid hsl(var(--character-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '12px',
+      width: 160,
       height: 120
     },
   },
   {
-    id: 'audio-gunshot-sfx',
+    id: 'char-femme-fatale',
     type: 'default',
-    position: { x: 1600, y: 760 },
+    position: { x: 230, y: 200 },
     data: { 
-      label: '💥 Gunshot SFX',
-      type: 'audio',
-      model: 'AudioCraft',
-      preview: 'https://www.soundjay.com/misc/sounds-1/beep-07a.wav',
-      effect: 'Dramatic gunshot with echo',
-      duration: '3s'
+      label: '💋 Femme Fatale',
+      type: 'character',
+      preview: womanPortrait,
+      details: 'Mysterious woman with deadly secrets'
     },
     style: { 
-      backgroundColor: 'hsl(var(--audio-bg))',
-      border: '2px solid hsl(var(--audio-border))',
+      backgroundColor: 'hsl(var(--character-bg))',
+      border: '3px solid hsl(var(--character-border))',
       color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '8px',
-      width: 200,
+      borderRadius: '12px',
+      width: 160,
+      height: 120
+    },
+  },
+  {
+    id: 'char-crime-boss',
+    type: 'default',
+    position: { x: 410, y: 200 },
+    data: { 
+      label: '👑 Crime Boss',
+      type: 'character',
+      preview: detectiveNeo,
+      details: 'Ruthless kingpin controlling the city'
+    },
+    style: { 
+      backgroundColor: 'hsl(var(--character-bg))',
+      border: '3px solid hsl(var(--character-border))',
+      color: 'hsl(var(--workspace-foreground))',
+      borderRadius: '12px',
+      width: 160,
       height: 120
     },
   },
 
-  // ============ ACT III - CLIMAX ============
+  // ============ SCRIPT NODES (Layer 6) ============
   {
-    id: 'script-act3-climax',
+    id: 'script-act1',
     type: 'default',
-    position: { x: 300, y: 1200 },
+    position: { x: 100, y: 50 },
     data: { 
-      label: '📜 Act III Climax',
+      label: '📜 Act I Script',
       type: 'script',
-      preview: 'The truth revealed, final confrontation...',
-      pages: '25 pages'
+      preview: 'FADE IN: Rain-soaked city streets...',
+      pages: '18 pages'
     },
     style: { 
       backgroundColor: 'hsl(var(--script-bg))',
       border: '2px solid hsl(var(--script-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '8px',
-      width: 200,
-      height: 140
+      width: 150,
+      height: 100
     },
   },
-
-  // ============ CLIMAX IMAGES ============
   {
-    id: 'img-penthouse-showdown',
+    id: 'script-act2',
     type: 'default',
-    position: { x: 550, y: 1180 },
+    position: { x: 270, y: 50 },
     data: { 
-      label: '🏙️ Penthouse Showdown',
-      type: 'image',
-      model: 'DALL-E 3',
-      preview: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=200&h=150&fit=crop',
-      prompt: 'Luxury penthouse with city view, dramatic lighting'
+      label: '📜 Act II Script',
+      type: 'script',
+      preview: 'The investigation deepens...',
+      pages: '35 pages'
     },
     style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
+      backgroundColor: 'hsl(var(--script-bg))',
+      border: '2px solid hsl(var(--script-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '8px',
-      width: 220,
-      height: 160
+      width: 150,
+      height: 100
     },
   },
   {
-    id: 'img-final-confrontation',
+    id: 'script-act3',
     type: 'default',
-    position: { x: 550, y: 1360 },
+    position: { x: 440, y: 50 },
     data: { 
-      label: '⚔️ Final Confrontation',
-      type: 'image',
-      model: 'Flux Pro',
-      preview: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=150&fit=crop',
-      prompt: 'Detective facing crime boss, guns drawn'
+      label: '📜 Act III Script',
+      type: 'script',
+      preview: 'The truth revealed in final confrontation...',
+      pages: '22 pages'
     },
     style: { 
-      backgroundColor: 'hsl(var(--image-bg))',
-      border: '2px solid hsl(var(--image-border))',
+      backgroundColor: 'hsl(var(--script-bg))',
+      border: '2px solid hsl(var(--script-border))',
       color: 'hsl(var(--workspace-foreground))',
       borderRadius: '8px',
-      width: 220,
-      height: 160
+      width: 150,
+      height: 100
     },
   },
 
-  // ============ CLIMAX SCENES ============
+  // ============ EFFECTS & TRANSITIONS (Scattered) ============
   {
-    id: 'scene-truth-revealed',
+    id: 'effect-rain',
     type: 'default',
-    position: { x: 800, y: 1240 },
+    position: { x: 600, y: 200 },
     data: { 
-      label: '🎬 Truth Revealed',
-      type: 'composition',
-      preview: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=250&h=180&fit=crop',
-      elements: 'Penthouse + All Characters + Revelation'
+      label: '🌧️ Rain Effect',
+      type: 'effect',
+      intensity: 'Heavy atmospheric rain',
+      overlay: 'Realistic precipitation'
     },
     style: { 
-      backgroundColor: 'hsl(var(--composition-bg))',
-      border: '2px solid hsl(var(--composition-border))',
+      backgroundColor: 'hsl(var(--effects-bg))',
+      border: '1px solid hsl(var(--effects-border))',
       color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '12px',
-      width: 250,
-      height: 180
-    },
-  },
-
-  // ============ CLIMAX VIDEO ============
-  {
-    id: 'video-final-showdown',
-    type: 'default',
-    position: { x: 1280, y: 1030 },
-    data: { 
-      label: '🎥 Final Showdown',
-      type: 'video',
-      model: 'Google Veo 3',
-      preview: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=280&h=200&fit=crop',
-      duration: '120s',
-      settings: 'Intense confrontation, dramatic angles'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--video-bg))',
-      border: '2px solid hsl(var(--video-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '10px',
-      width: 280,
-      height: 200
+      borderRadius: '6px',
+      width: 120,
+      height: 70
     },
   },
   {
-    id: 'video-resolution',
+    id: 'effect-noir-grade',
     type: 'default',
-    position: { x: 1280, y: 1250 },
+    position: { x: 740, y: 200 },
     data: { 
-      label: '🎥 Resolution',
-      type: 'video',
-      model: 'Minimax Hailuo',
-      preview: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=280&h=200&fit=crop',
-      duration: '90s',
-      settings: 'Emotional resolution, dawn breaking'
+      label: '🎨 Noir Color Grade',
+      type: 'effect',
+      style: 'High contrast B&W with selective color',
+      mood: 'Dark and moody'
     },
     style: { 
-      backgroundColor: 'hsl(var(--video-bg))',
-      border: '2px solid hsl(var(--video-border))',
+      backgroundColor: 'hsl(var(--effects-bg))',
+      border: '1px solid hsl(var(--effects-border))',
       color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '10px',
-      width: 280,
-      height: 200
+      borderRadius: '6px',
+      width: 120,
+      height: 70
     },
   },
-
-  // ============ NEO DETECTIVE EPISODE FINAL CUT ============
   {
-    id: 'neo-detective-episode',
+    id: 'transition-fade',
     type: 'default',
-    position: { x: 1900, y: 700 },
+    position: { x: 880, y: 200 },
     data: { 
-      label: '🎬 NEO DETECTIVE EPISODE',
-      type: 'export',
-      preview: 'https://images.unsplash.com/photo-1489599745480-b93463631bf9?w=350&h=250&fit=crop',
-      totalDuration: '42 minutes',
-      resolution: '4K HDR',
-      format: 'ProRes 422 HQ'
+      label: '🌫️ Fade Transition',
+      type: 'transition',
+      duration: '2s',
+      effect: 'Cinematic cross-fade'
     },
     style: { 
-      backgroundColor: 'hsl(var(--export-bg))',
-      border: '4px solid hsl(var(--export-border))',
+      backgroundColor: 'hsl(var(--effects-bg))',
+      border: '1px solid hsl(var(--effects-border))',
       color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '20px',
-      width: 350,
-      height: 250,
-      boxShadow: '0 12px 48px hsl(var(--export-shadow))'
-    },
-  },
-
-  // ============ FILM TIMELINE (Horizontal Roll) ============
-  {
-    id: 'timeline-film-roll',
-    type: 'default',
-    position: { x: 2400, y: 600 },
-    data: { 
-      label: '🎞️ NEO DETECTIVE TIMELINE',
-      type: 'timeline',
-      scenes: ['Opening', 'Investigation', 'Nightclub', 'Chase', 'Revelation', 'Showdown', 'Resolution'],
-      totalLength: '42 minutes',
-      acts: 'Three Act Structure'
-    },
-    style: { 
-      backgroundColor: 'hsl(var(--timeline-bg))',
-      border: '3px solid hsl(var(--timeline-border))',
-      color: 'hsl(var(--workspace-foreground))',
-      borderRadius: '30px',
-      width: 800,
-      height: 300,
-      backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 15px, hsl(var(--timeline-border)) 15px, hsl(var(--timeline-border)) 17px), linear-gradient(180deg, hsl(var(--timeline-bg)), hsl(var(--timeline-accent)))',
-      boxShadow: '0 8px 32px hsl(var(--timeline-shadow))'
+      borderRadius: '6px',
+      width: 120,
+      height: 70
     },
   }
 ];
 
+// Connections flowing upward from timeline like tree branches
 const initialEdges: Edge[] = [
-  // ============ CHARACTER TO IMAGE CONNECTIONS ============
-  { id: 'e-char-neo-city', source: 'char-detective-neo', target: 'img-city-noir-night', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
-  { id: 'e-char-neo-office', source: 'char-detective-neo', target: 'img-detective-office', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
-  { id: 'e-char-femme-nightclub', source: 'char-femme-fatale', target: 'img-nightclub-interior', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
-  { id: 'e-char-boss-warehouse', source: 'char-crime-boss', target: 'img-warehouse-exterior', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
-  { id: 'e-char-informant-alley', source: 'char-informant', target: 'img-alley-meeting', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
-
-  // ============ SCRIPT TO SCENE CONNECTIONS ============
-  { id: 'e-script-act1-opening', source: 'script-act1-opener', target: 'scene-opening-sequence', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
-  { id: 'e-script-incident-crime', source: 'script-inciting-incident', target: 'scene-crime-discovery', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
-  { id: 'e-script-act2-nightclub', source: 'script-act2-investigation', target: 'scene-nightclub-interrogation', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
-  { id: 'e-script-act3-truth', source: 'script-act3-climax', target: 'scene-truth-revealed', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
-
-  // ============ IMAGE TO SCENE COMPOSITION CONNECTIONS ============
-  { id: 'e-city-opening', source: 'img-city-noir-night', target: 'scene-opening-sequence', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-  { id: 'e-crime-discovery', source: 'img-crime-scene', target: 'scene-crime-discovery', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-  { id: 'e-office-opening', source: 'img-detective-office', target: 'scene-opening-sequence', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-  { id: 'e-nightclub-interrogation', source: 'img-nightclub-interior', target: 'scene-nightclub-interrogation', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-  { id: 'e-warehouse-stakeout', source: 'img-warehouse-exterior', target: 'scene-warehouse-stakeout', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-  { id: 'e-alley-stakeout', source: 'img-alley-meeting', target: 'scene-warehouse-stakeout', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-  { id: 'e-penthouse-truth', source: 'img-penthouse-showdown', target: 'scene-truth-revealed', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-  { id: 'e-confrontation-truth', source: 'img-final-confrontation', target: 'scene-truth-revealed', style: { stroke: 'hsl(var(--image-border))', strokeWidth: 2 } },
-
-  // ============ EFFECTS TO VIDEO CONNECTIONS ============
-  { id: 'e-fade-in-title', source: 'transition-fade-in', target: 'video-opening-title', style: { stroke: 'hsl(var(--effects-border))', strokeWidth: 1, strokeDasharray: '3,3' } },
-  { id: 'e-rain-detective', source: 'effect-rain', target: 'video-detective-intro', style: { stroke: 'hsl(var(--effects-border))', strokeWidth: 1, strokeDasharray: '3,3' } },
-  { id: 'e-noir-grade-all', source: 'effect-color-grade-noir', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--effects-border))', strokeWidth: 1, strokeDasharray: '3,3' } },
+  // ============ TIMELINE TO SCENE CONNECTIONS ============
+  { id: 'timeline-opening', source: 'timeline-master', target: 'scene-opening', style: { stroke: 'hsl(var(--timeline-border))', strokeWidth: 4 } },
+  { id: 'timeline-inciting', source: 'timeline-master', target: 'scene-inciting', style: { stroke: 'hsl(var(--timeline-border))', strokeWidth: 4 } },
+  { id: 'timeline-investigation', source: 'timeline-master', target: 'scene-investigation', style: { stroke: 'hsl(var(--timeline-border))', strokeWidth: 4 } },
+  { id: 'timeline-nightclub', source: 'timeline-master', target: 'scene-nightclub', style: { stroke: 'hsl(var(--timeline-border))', strokeWidth: 4 } },
+  { id: 'timeline-chase', source: 'timeline-master', target: 'scene-chase', style: { stroke: 'hsl(var(--timeline-border))', strokeWidth: 4 } },
+  { id: 'timeline-showdown', source: 'timeline-master', target: 'scene-showdown', style: { stroke: 'hsl(var(--timeline-border))', strokeWidth: 4 } },
 
   // ============ SCENE TO VIDEO CONNECTIONS ============
-  { id: 'e-opening-title-video', source: 'scene-opening-sequence', target: 'video-opening-title', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
-  { id: 'e-opening-detective-video', source: 'scene-opening-sequence', target: 'video-detective-intro', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
-  { id: 'e-crime-detective-video', source: 'scene-crime-discovery', target: 'video-detective-intro', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
-  { id: 'e-nightclub-video', source: 'scene-nightclub-interrogation', target: 'video-nightclub-scene', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
-  { id: 'e-stakeout-chase', source: 'scene-warehouse-stakeout', target: 'video-chase-sequence', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
-  { id: 'e-truth-showdown', source: 'scene-truth-revealed', target: 'video-final-showdown', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
-  { id: 'e-showdown-resolution', source: 'video-final-showdown', target: 'video-resolution', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 3 } },
+  { id: 'scene-video-opening-title', source: 'scene-opening', target: 'video-opening-title', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
+  { id: 'scene-video-detective', source: 'scene-opening', target: 'video-detective-intro', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
+  { id: 'scene-video-crime', source: 'scene-inciting', target: 'video-crime-discovery', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
+  { id: 'scene-video-nightclub', source: 'scene-nightclub', target: 'video-nightclub-tension', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
+  { id: 'scene-video-chase', source: 'scene-chase', target: 'video-chase-sequence', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
+  { id: 'scene-video-showdown', source: 'scene-showdown', target: 'video-final-confrontation', style: { stroke: 'hsl(var(--composition-border))', strokeWidth: 3 } },
 
-  // ============ AUDIO TO VIDEO CONNECTIONS ============
-  { id: 'e-narration-all', source: 'audio-detective-narration', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
-  { id: 'e-jazz-all', source: 'audio-jazz-score', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
-  { id: 'e-rain-ambience', source: 'audio-rain-ambience', target: 'video-detective-intro', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
-  { id: 'e-femme-nightclub', source: 'audio-dialogue-femme', target: 'video-nightclub-scene', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
-  { id: 'e-gunshot-showdown', source: 'audio-gunshot-sfx', target: 'video-final-showdown', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
+  // ============ VIDEO TO IMAGE CONNECTIONS ============
+  { id: 'video-img-city', source: 'video-opening-title', target: 'img-city-skyline', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 2 } },
+  { id: 'video-img-rain', source: 'video-detective-intro', target: 'img-rain-street', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 2 } },
+  { id: 'video-img-office', source: 'video-detective-intro', target: 'img-detective-office', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 2 } },
+  { id: 'video-img-crime', source: 'video-crime-discovery', target: 'img-crime-scene-tape', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 2 } },
+  { id: 'video-img-nightclub', source: 'video-nightclub-tension', target: 'img-nightclub-interior', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 2 } },
+  { id: 'video-img-bar', source: 'video-nightclub-tension', target: 'img-bar-scene', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 2 } },
 
-  // ============ VIDEO TO NEO DETECTIVE EPISODE CONNECTIONS ============
-  { id: 'e-title-final', source: 'video-opening-title', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 4 } },
-  { id: 'e-detective-intro-final', source: 'video-detective-intro', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 4 } },
-  { id: 'e-nightclub-final', source: 'video-nightclub-scene', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 4 } },
-  { id: 'e-chase-final', source: 'video-chase-sequence', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 4 } },
-  { id: 'e-showdown-final', source: 'video-final-showdown', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 4 } },
-  { id: 'e-resolution-final', source: 'video-resolution', target: 'neo-detective-episode', style: { stroke: 'hsl(var(--video-border))', strokeWidth: 4 } },
+  // ============ AUDIO CONNECTIONS (TO VIDEOS) ============
+  { id: 'audio-narration-detective', source: 'audio-detective-narration', target: 'video-detective-intro', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
+  { id: 'audio-jazz-nightclub', source: 'audio-jazz-score', target: 'video-nightclub-tension', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
+  { id: 'audio-rain-opening', source: 'audio-rain-ambience', target: 'video-opening-title', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
+  { id: 'audio-femme-nightclub', source: 'audio-femme-voice', target: 'video-nightclub-tension', style: { stroke: 'hsl(var(--audio-border))', strokeWidth: 2, strokeDasharray: '5,5' } },
 
-  // ============ NEO DETECTIVE EPISODE TO TIMELINE CONNECTION ============
-  { id: 'e-final-timeline', source: 'neo-detective-episode', target: 'timeline-film-roll', style: { stroke: 'hsl(var(--export-border))', strokeWidth: 8, strokeDasharray: '10,5' } }
+  // ============ CHARACTER CONNECTIONS ============
+  { id: 'char-neo-detective', source: 'char-detective-neo', target: 'video-detective-intro', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
+  { id: 'char-femme-nightclub', source: 'char-femme-fatale', target: 'video-nightclub-tension', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
+  { id: 'char-boss-showdown', source: 'char-crime-boss', target: 'video-final-confrontation', style: { stroke: 'hsl(var(--character-border))', strokeWidth: 2 } },
+
+  // ============ SCRIPT CONNECTIONS ============
+  { id: 'script-act1-opening', source: 'script-act1', target: 'scene-opening', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
+  { id: 'script-act1-inciting', source: 'script-act1', target: 'scene-inciting', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
+  { id: 'script-act2-investigation', source: 'script-act2', target: 'scene-investigation', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
+  { id: 'script-act2-nightclub', source: 'script-act2', target: 'scene-nightclub', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
+  { id: 'script-act3-showdown', source: 'script-act3', target: 'scene-showdown', style: { stroke: 'hsl(var(--script-border))', strokeWidth: 2 } },
+
+  // ============ EFFECTS CONNECTIONS ============
+  { id: 'effect-rain-opening', source: 'effect-rain', target: 'video-opening-title', style: { stroke: 'hsl(var(--effects-border))', strokeWidth: 1, strokeDasharray: '3,3' } },
+  { id: 'effect-noir-all', source: 'effect-noir-grade', target: 'scene-opening', style: { stroke: 'hsl(var(--effects-border))', strokeWidth: 1, strokeDasharray: '3,3' } },
+  { id: 'transition-fade-scenes', source: 'transition-fade', target: 'scene-investigation', style: { stroke: 'hsl(var(--effects-border))', strokeWidth: 1, strokeDasharray: '3,3' } },
 ];
 
 export function CentralWorkspace() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
+  const onNodeClick = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      setSelectedNode(node.data);
+      setIsModalOpen(true);
+    },
+    []
+  );
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedNode(null);
+  }, []);
+
   return (
-    <div className="w-full h-full bg-workspace">
+    <div className="w-full h-full bg-workspace relative">
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeClick={onNodeClick}
+        nodeTypes={nodeTypes}
         fitView
         className="bg-workspace"
         proOptions={{ hideAttribution: true }}
@@ -901,6 +791,12 @@ export function CentralWorkspace() {
           nodeColor="hsl(var(--primary))"
         />
       </ReactFlow>
+
+      <NodeDetailModal 
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        nodeData={selectedNode}
+      />
     </div>
   );
 }
