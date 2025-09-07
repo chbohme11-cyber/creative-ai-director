@@ -1149,6 +1149,7 @@ export function CentralWorkspace() {
 
       {selectedNode && (
         <NodeDetailModal
+          isOpen={!!selectedNode}
           node={selectedNode}
           onClose={onCloseModal}
         />

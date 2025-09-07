@@ -27,11 +27,11 @@ import {
 interface NodeDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  nodeData: any;
+  node: any;
 }
 
-export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalProps) {
-  if (!nodeData) return null;
+export function NodeDetailModal({ isOpen, onClose, node }: NodeDetailModalProps) {
+  if (!node) return null;
 
   const renderImageNodeContent = () => (
     <div className="space-y-6">
@@ -46,8 +46,8 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
           <CardContent>
             <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
               <img 
-                src={nodeData.preview} 
-                alt="Node preview" 
+                src={node.preview} 
+                alt="Node preview"
                 className="w-full h-full object-cover rounded-lg"
               />
             </div>
@@ -80,7 +80,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
           <CardContent className="space-y-4">
             <div>
               <Label>AI Model</Label>
-              <Select defaultValue={nodeData.model}>
+              <Select defaultValue={node.model}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -96,7 +96,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
             <div>
               <Label>Prompt</Label>
               <Textarea 
-                defaultValue={nodeData.prompt}
+                defaultValue={node.prompt}
                 placeholder="Describe what you want to generate..."
                 rows={3}
               />
@@ -190,7 +190,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
           <CardContent>
             <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
               <img 
-                src={nodeData.preview} 
+                src={node.preview}
                 alt="Video preview" 
                 className="w-full h-full object-cover rounded-lg"
               />
@@ -211,7 +211,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
           <CardContent className="space-y-4">
             <div>
               <Label>AI Model</Label>
-              <Select defaultValue={nodeData.model}>
+              <Select defaultValue={node.model}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -225,7 +225,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
             </div>
 
             <div>
-              <Label>Duration: {nodeData.duration}</Label>
+              <Label>Duration: {node.duration}</Label>
               <Slider defaultValue={[30]} max={120} step={5} className="mt-2" />
             </div>
 
@@ -268,7 +268,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
         <CardContent className="space-y-4">
           <div>
             <Label>AI Model</Label>
-            <Select defaultValue={nodeData.model}>
+            <Select defaultValue={node.model}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -283,11 +283,11 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
 
           <div>
             <Label>Voice/Style</Label>
-            <Input defaultValue={nodeData.voice || nodeData.style} />
+            <Input defaultValue={node.voice || node.style} />
           </div>
 
           <div>
-            <Label>Duration: {nodeData.duration}</Label>
+            <Label>Duration: {node.duration}</Label>
             <Slider defaultValue={[90]} max={300} step={5} className="mt-2" />
           </div>
 
@@ -317,13 +317,13 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
         <CardContent className="space-y-4">
           <div>
             <Label>Title</Label>
-            <Input defaultValue={nodeData.label} />
+            <Input defaultValue={node.label} />
           </div>
 
           <div>
             <Label>Content</Label>
             <Textarea 
-              defaultValue={nodeData.preview}
+              defaultValue={node.preview}
               rows={10}
               placeholder="Write your script here..."
             />
@@ -331,9 +331,9 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
 
           <div className="flex items-center gap-4">
             <div>
-              <Label>Pages: {nodeData.pages}</Label>
+              <Label>Pages: {node.pages}</Label>
             </div>
-            <Badge variant="secondary">Scene {nodeData.scene || '1'}</Badge>
+            <Badge variant="secondary">Scene {node.scene || '1'}</Badge>
           </div>
         </CardContent>
       </Card>
@@ -341,7 +341,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
   );
 
   const getTabsForNodeType = () => {
-    switch (nodeData.type) {
+    switch (node.type) {
       case 'image':
         return (
           <Tabs defaultValue="generate" className="w-full">
@@ -424,7 +424,7 @@ export function NodeDetailModal({ isOpen, onClose, nodeData }: NodeDetailModalPr
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {nodeData.label}
+            {node.label}
           </DialogTitle>
         </DialogHeader>
         
