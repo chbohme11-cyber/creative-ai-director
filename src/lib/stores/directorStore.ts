@@ -7,6 +7,7 @@ export interface DirectorState {
   rightDrawerOpen: boolean;
   activeLeftTab: 'library' | 'apis' | 'scripts' | 'nodes' | 'projects' | 'settings';
   activeRightTab: 'chat' | 'collaboration' | 'memory' | 'profile' | 'analytics' | 'help';
+  activeModule: string;
   
   // Layout State
   timelineHeight: number;
@@ -22,6 +23,7 @@ export interface DirectorState {
   toggleRightDrawer: () => void;
   setActiveLeftTab: (tab: DirectorState['activeLeftTab']) => void;
   setActiveRightTab: (tab: DirectorState['activeRightTab']) => void;
+  setActiveModule: (module: string) => void;
   setTimelineHeight: (height: number) => void;
   setCurrentProject: (projectId: string | null) => void;
 }
@@ -33,6 +35,7 @@ export const useDirectorStore = create<DirectorState>((set) => ({
   rightDrawerOpen: false,
   activeLeftTab: 'library',
   activeRightTab: 'chat',
+  activeModule: 'director',
   timelineHeight: 200,
   leftDrawerWidth: 320,
   rightDrawerWidth: 320,
@@ -44,6 +47,7 @@ export const useDirectorStore = create<DirectorState>((set) => ({
   toggleRightDrawer: () => set((state) => ({ rightDrawerOpen: !state.rightDrawerOpen })),
   setActiveLeftTab: (tab) => set({ activeLeftTab: tab }),
   setActiveRightTab: (tab) => set({ activeRightTab: tab }),
+  setActiveModule: (module) => set({ activeModule: module }),
   setTimelineHeight: (height) => set({ timelineHeight: Math.max(60, Math.min(400, height)) }),
   setCurrentProject: (projectId) => set({ currentProject: projectId }),
 }));

@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { ClapperBar } from './ClapperBar';
+import { EnhancedClapperBar } from './EnhancedClapperBar';
+import { EnhancedCentralWorkspace } from './EnhancedCentralWorkspace';
 import { LeftToolbar } from './LeftToolbar';
 import { RightToolbar } from './RightToolbar';
-import { CentralWorkspace } from './CentralWorkspace';
 import { BottomTimeline } from './BottomTimeline';
 import { useDirectorStore } from '@/lib/stores/directorStore';
 
@@ -17,7 +17,7 @@ export function DirectorLayout() {
   return (
     <div className="h-screen flex flex-col bg-workspace text-workspace-foreground overflow-hidden">
       {/* Clapper Bar - Top Navigation */}
-      {!isZenMode && <ClapperBar />}
+      {!isZenMode && <EnhancedClapperBar />}
       
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
@@ -26,7 +26,7 @@ export function DirectorLayout() {
         
         {/* Central Workspace - React Flow Node Graph */}
         <div className="flex-1 relative">
-          <CentralWorkspace />
+          <EnhancedCentralWorkspace />
         </div>
         
         {/* Right Toolbar */}
