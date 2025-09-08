@@ -1,5 +1,3 @@
-import { Handle, Position } from '@xyflow/react';
-
 interface TimelineNodeProps {
   data: {
     label: string;
@@ -12,13 +10,6 @@ interface TimelineNodeProps {
 export function TimelineNode({ data }: TimelineNodeProps) {
   return (
     <div className="relative">
-      <Handle 
-        type="target" 
-        position={Position.Top} 
-        className="w-6 h-6 bg-timeline-accent border-2 border-timeline-border"
-        style={{ top: -12 }}
-      />
-      
       <div className="bg-gradient-to-r from-timeline-bg to-timeline-accent border-4 border-timeline-border rounded-3xl p-6 shadow-2xl">
         {/* Film strip header */}
         <div className="text-center mb-6">
