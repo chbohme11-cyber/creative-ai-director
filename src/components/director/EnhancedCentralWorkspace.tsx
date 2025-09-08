@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { ReactFlow, Node, Edge, Background, Controls, MiniMap, useNodesState, useEdgesState, ConnectionMode } from '@xyflow/react';
+import { ReactFlow, ReactFlowProvider, Node, Edge, Background, Controls, MiniMap, useNodesState, useEdgesState, ConnectionMode } from '@xyflow/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -327,37 +327,39 @@ export function EnhancedCentralWorkspace() {
     <div className="h-full w-full relative bg-background">
       {/* Main ReactFlow Canvas */}
       <div className="h-full">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={onNodeClick}
-          onNodeDoubleClick={onNodeDoubleClick}
-          nodeTypes={nodeTypes}
-          connectionMode={ConnectionMode.Loose}
-          fitView
-          className="bg-muted/20"
-        >
-          <Background color="#444" size={1} />
-          <Controls className="!bg-background !border-border" />
-          <MiniMap 
-            className="!bg-background !border-border"
-            nodeColor={(node: any) => {
-              const colors = {
-                character: '#8B5CF6',
-                scene: '#10B981',
-                effect: '#F59E0B',
-                audio: '#EF4444',
-                video: '#3B82F6',
-                image: '#06B6D4',
-                script: '#EC4899',
-                timeline: '#1a1a1a'
-              };
-              return colors[node.data?.type as keyof typeof colors] || '#6B7280';
-            }}
-          />
-        </ReactFlow>
+        <ReactFlowProvider>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onNodeClick={onNodeClick}
+            onNodeDoubleClick={onNodeDoubleClick}
+            nodeTypes={nodeTypes}
+            connectionMode={ConnectionMode.Loose}
+            fitView
+            className="bg-muted/20"
+          >
+            <Background color="#444" size={1} />
+            <Controls className="!bg-background !border-border" />
+            <MiniMap 
+              className="!bg-background !border-border"
+              nodeColor={(node: any) => {
+                const colors = {
+                  character: '#8B5CF6',
+                  scene: '#10B981',
+                  effect: '#F59E0B',
+                  audio: '#EF4444',
+                  video: '#3B82F6',
+                  image: '#06B6D4',
+                  script: '#EC4899',
+                  timeline: '#1a1a1a'
+                };
+                return colors[node.data?.type as keyof typeof colors] || '#6B7280';
+              }}
+            />
+          </ReactFlow>
+        </ReactFlowProvider>
       </div>
 
       {/* Timeline Strip at Bottom */}
